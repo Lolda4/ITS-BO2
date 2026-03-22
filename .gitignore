@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.env
+venv/
+.venv/
+env/
+
+# Backend runtime dirs (generované za běhu)
+its-bo-backend/results/
+its-bo-backend/logs/
+
+# Next.js
+its-bo-frontend/.next/
+its-bo-frontend/node_modules/
+its-bo-frontend/.env.local
+its-bo-frontend/.env.production.local
+its-bo-frontend/out/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+*.swp
