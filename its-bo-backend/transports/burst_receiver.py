@@ -28,6 +28,7 @@ import time
 from typing import Optional
 
 from config import UDP_RECV_BUFFER_BYTES
+from core.audit_logger import audit_logger
 
 logger = logging.getLogger("itsbo.transport.burst_receiver")
 
@@ -129,6 +130,9 @@ class BurstReceiver:
                     # uc_id a session_hash parsujeme ale neukládáme – slouží pro routing
                     self._packets.append((seq, arrival_us, len(data), ts_ns))
                     self._bytes_received += len(data)
+                    audit_logger.log_event(session_id, "UL", "Rx_Data", {
+                        "seq": seq, "size_B": len(data), "arrival_us": arrival_us, "sender_ts_ns": ts_ns
+                    })
                 else:
                     # Malý paket – stále započítáme bytes ale nemáme seq
                     self._bytes_received += len(data)

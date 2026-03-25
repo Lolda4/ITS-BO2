@@ -509,7 +509,7 @@ class BaseUseCase(ABC):
 | Standard | 3GPP TS 22.186 v18.0.1 Table 5.4-1 | |
 | Max E2E latence | ≤ 10 ms | R.5.4-004 |
 | Spolehlivost (app-level) | ≥ 99,99 % | R.5.4-004 |
-| UL throughput | ≥ 25 Mbps | R.5.4-004 (peak) |
+| UL throughput | ≥ 100 Mbps | R.5.4-004 (Safe-side Max) |
 | UL payload size | 1600 B | R.5.4-001 |
 | UL Tx rate | 10 msg/s | R.5.4-001 |
 | Min range | 500 m | R.5.4-004 |
@@ -543,7 +543,7 @@ class UcASdsm(BaseUseCase):
             thresholds={
                 "e2e_latency_ms": {"value": 10, "op": "<=", "ref": "R.5.4-004"},
                 "application_reliability_pct": {"value": 99.99, "op": ">=", "ref": "R.5.4-004"},
-                "ul_throughput_mbps": {"value": 25, "op": ">=", "ref": "R.5.4-004"},
+                "ul_throughput_mbps": {"value": 100, "op": ">=", "ref": "R.5.4-004"},
             },
             default_params={
                 "payload_size_bytes": 1600,
@@ -601,7 +601,7 @@ class UcASdsm(BaseUseCase):
 | Standard | 3GPP TS 22.186 v18.0.1 Table 5.4-1 | |
 | Max E2E latence | ≤ 10 ms | R.5.4-009 (sloupec Tx rate v tabulce) |
 | Spolehlivost (app-level) | ≥ 99,99 % | R.5.4-009 |
-| Throughput (UL i DL) | ≥ 10 Mbps | R.5.4-009 (sloupec Data rate) |
+| Throughput (UL i DL) | ≥ 90 Mbps | R.5.4-009 (Peak) |
 | Min range | 400 m | R.5.4-009 |
 | Protokol | UDP | |
 | Communication pattern | BIDIRECTIONAL | |
@@ -626,7 +626,7 @@ DL video burst běží nezávisle na UL příjmu. Generátor produkuje GOP patte
 | Standard | 3GPP TS 22.186 v18.0.1 Table 5.5-1 | |
 | Max E2E latence (řídicí smyčka) | ≤ 5 ms | R.5.5-002 |
 | Spolehlivost (app-level) | ≥ 99,999 % | R.5.5-002 |
-| UL throughput (video + telemetrie) | ≥ 25 Mbps | R.5.5-002 |
+| UL throughput (video + telemetrie) | ≥ 50 Mbps | R.5.5-002 (Safe-side 4K) |
 | DL throughput (řídicí příkazy) | ≥ 1 Mbps | R.5.5-002 |
 | DL packet size | 256 B | Odhad autora dle typického MCM řídicího obsahu (§5.5) |
 | DL interval (řídicí smyčka) | 100 ms (10 Hz) | Odvozeno z typické řídicí frekvence |
@@ -638,7 +638,7 @@ DL video burst běží nezávisle na UL příjmu. Generátor produkuje GOP patte
 
 **Komunikační vzor – dvě paralelní nezávislé větve:**
 
-**UL větev** (video + telemetrie): OBU → ITS-BO: BurstEngine UDP @ 25 Mbps. ITS-BO: BurstReceiver přijímá, měří throughput, jitter, loss.
+**UL větev** (video + telemetrie): OBU → ITS-BO: BurstEngine UDP @ 50 Mbps. ITS-BO: BurstReceiver přijímá, měří throughput, jitter, loss.
 
 **DL větev** (řídicí smyčka – KRITICKÁ): ITS-BO → OBU: UdpControlLoop posílá MCM zprávy @ 10 Hz. OBU → ITS-BO: ACK na každý příkaz okamžitě. **RTT měřeno na ITS-BO:** `ack_receive_time_us - mcm_send_time_us` (obě timestamps z jednoho hostu = nepotřebuje clock sync). **Delta RTT** je kritická metrika.
 

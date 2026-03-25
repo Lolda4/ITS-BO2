@@ -12,17 +12,17 @@ Pro připojení na server přímo ze sítě laboratoře.
 Tyto adresy a porty budete muset zadat do nastavení mobilní OBU aplikace s telefonem venku pro testování.
 
 - **SSH Přístup:**  
-  `ssh itsbo@147.32.102.209`
+  `ssh itsbo@147.32.103.236`
 
 - **Backend API (REST):**  
-  `http://147.32.102.209:8000`
+  `http://147.32.103.236:8000`
 
 - **UDP Control Loop (pro navazování spojení):**  
-  `147.32.102.209:4567`
+  `147.32.103.236:4567`
 
 - **BurstReceiver (příjem hlavních telemetrických dat):**  
-  `147.32.102.209:5100`
+  `147.32.103.236:5100`
 
 ---
 *Tip pro OBU aplikaci:*
-V nastavení OBU aplikace ve vašem OnePlus 8 zadejte pro venkovní testování IP `147.32.102.209` a API port `8000`. Ostatní UDP porty by si měla aplikace odvodit, případně se nastavují přímo v kódu dle smlouvy.
+V nastavení OBU aplikace ve vašem OnePlus 8 zadejte pro venkovní testování IP `147.32.103.236` a API port `8000`. Ostatní UDP porty by si měla aplikace odvodit, případně se nastavují přímo v kódu dle smlouvy.

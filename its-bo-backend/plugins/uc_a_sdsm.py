@@ -55,12 +55,13 @@ class UcASdsm(BaseUseCase):
             thresholds={
                 "e2e_latency_ms": {"value": 10, "op": "<=", "ref": "R.5.4-004"},
                 "application_reliability_pct": {"value": 99.99, "op": ">=", "ref": "R.5.4-004"},
-                "ul_throughput_mbps": {"value": 25, "op": ">=", "ref": "R.5.4-004"},
+                "ul_throughput_mbps": {"value": 100, "op": ">=", "ref": "R.5.4-004 (Safe Side Max)"},
             },
             default_params={
                 "payload_size_bytes": 1600,
                 "tx_rate_hz": 10,
-                "num_objects_per_cpm": 5,
+                "ul_bitrate_mbps": 100.0,
+                "num_objects_per_cpm": 50,
                 "aggregation_window_ms": 500,
             },
             baseline_required=True,
@@ -137,6 +138,6 @@ class UcASdsm(BaseUseCase):
 
     def get_obu_instructions(self, params: dict[str, Any]) -> str:
         return (
-            "OBU: Posílej CPM-like pakety (1600 B) na burst_port @ 10 Hz. "
+            "OBU: Posílej CPM-like pakety (1600 B) na burst_port generující max propustnost (až 100 Mbps). "
             "Přijímej agregovanou situační mapu na control_port."
         )

@@ -40,6 +40,7 @@ from core.port_allocator import PortAllocator
 from core.result_store import ResultStore
 from core.session_coordinator import SessionCoordinator
 from core.test_runner import TestRunner
+from core.audit_logger import audit_logger
 
 # ──────────────────────────────────────────────────────────
 # Logging setup
@@ -82,6 +83,7 @@ async def lifespan(app: FastAPI):
     # Inicializuj komponenty
     plugin_loader = PluginLoader()
     plugin_loader.load("plugins")
+    audit_logger.start()
 
     port_allocator = PortAllocator()
     result_store = ResultStore()
@@ -99,6 +101,7 @@ async def lifespan(app: FastAPI):
     yield
 
     logger.info("ITS-BO Backend shutting down...")
+    await audit_logger.stop()
 
 
 # ──────────────────────────────────────────────────────────
@@ -107,7 +110,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="ITS-BO Test Platform",
     description="C-ITS-S backoffice test platform for V2X communication testing",
-    version="3.0.0",
+    version="3.1.0-Audit",
     lifespan=lifespan,
 )
 

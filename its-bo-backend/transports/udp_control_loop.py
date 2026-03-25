@@ -27,6 +27,7 @@ import logging
 import socket
 import time
 from typing import Callable, Optional
+from core.audit_logger import audit_logger
 
 logger = logging.getLogger("itsbo.transport.udp_control_loop")
 
@@ -112,7 +113,7 @@ class UdpControlLoop:
                 payload_factory, session_id,
             )
         )
-        self._recv_task = asyncio.create_task(self._recv_loop(self._sock, loop))
+        self._recv_task = asyncio.create_task(self._recv_loop(self._sock, loop, session_id))
 
     async def _send_loop(
         self,
@@ -152,6 +153,9 @@ class UdpControlLoop:
                 try:
                     await loop.sock_sendto(sock, payload, (target_ip, target_port))
                     self._packets_sent += 1
+                    audit_logger.log_event(session_id, "DL", "Tx_MCM", {
+                        "seq": seq, "size_B": len(payload), "send_time_us": send_time_us
+                    })
                 except Exception as e:
                     logger.warning("MCM send error (seq=%d): %s", seq, e)
 
@@ -165,6 +169,7 @@ class UdpControlLoop:
         self,
         sock: socket.socket,
         loop: asyncio.AbstractEventLoop,
+        session_id: str,
     ) -> None:
         """
         Přijímá ACK od OBU.
@@ -197,6 +202,9 @@ class UdpControlLoop:
                                 }
                             )
                             self._acks_received += 1
+                            audit_logger.log_event(session_id, "UL", "Rx_ACK", {
+                                "seq": ack_seq, "rtt_us": rtt_us, "obu_proc_us": obu_processing_ns / 1000
+                            })
                         else:
                             logger.debug(
                                 "ACK for unknown seq %d (may have timed out)", ack_seq

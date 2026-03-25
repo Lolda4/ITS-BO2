@@ -6,7 +6,7 @@ Tento dokument slouží jako vysoce pokročilá technická a architektonická sp
 ## 1. High-Level Architektura Systemu
 
 Systém je koncipován jako distribuované asymetrické řešení typu **High-Volume Client & Real-time Aggregator**. 
-Sestává se z mobilní stanice (Android), která za běhu chrlí telemetrická UDP a JSON TCP data do centralizovaného Linux serveru, který je neblokujícím (asynchronním) způsobem streamuje přes Server-Sent Events (SSE) do moderního Reactího frontendu.
+Sestává se z mobilní stanice (Android v2.0.0), která za běhu chrlí telemetrická UDP a JSON TCP data do centralizovaného Linux serveru, který je neblokujícím (asynchronním) způsobem streamuje přes Server-Sent Events (SSE) do moderního Reactího frontendu. Systém je testován na zátěž až **100 Mbps**.
 
 ```mermaid
 graph TD
@@ -41,7 +41,7 @@ graph TD
 
 ## 2. ITS-OBU (Android Client) - Technologický Stack
 
-Klient je postaven v Kotlinu pro moderní API 30+ s těmito klíčovými stavebními bloky:
+Klient je postaven v Kotlinu pro moderní API 30+ (verze 2.0.0 Max Load) s těmito klíčovými stavebními bloky:
 
 ### 2.1 Concurrency & Lifecycle Management
 - Vzhledem k extrémní zátěži (desítky tisíc requestů na síť za minutu) je kompletní síťová vrstva odbavována skrz **Kotlin Coroutines** na `Dispatchers.IO` poolu. 
@@ -65,7 +65,7 @@ Serverové jádro je napsáno v Python 3.12 nad frameworkem **FastAPI** a asynch
 Architektura se nespoléhá plně na TCP z důvodu nutnosti měření jitteru, latence a paketových ztrát.
 Při zátěžových scénářích ("Burst testech") běží pod standardním Python `asyncio` čisté sokety:
 - **Port 5100 (Burst Receiver):** Běží vlastní nekonečná smyčka (`Transport` protocol). Přijímá nefiltrované byty od klienta a na základě serializované sekvence poznává přeskočená ID balíčků (Packet loss detection).
-- Konfigurace Bufferů: Jelikož CPython neumí efektivně číst miliardu UDP bufferů z jádra za sekundu před tím, než jádro smaže staré stacky, inicializační skript nastavuje systémové konstanty Linuxu: `net.core.rmem_max=8388608` (8 MB UDP ring buffery) pro zachování integrity paketu před Python zpracováním.
+- Konfigurace Bufferů: Jelikož CPython neumí efektivně číst miliardu UDP bufferů z jádra za sekundu před tím, než jádro smaže staré stacky, inicializační skript nastavuje systémové konstanty Linuxu: `net.core.rmem_max=16777216` (16 MB UDP ring buffery) pro zachování integrity paketu před Python zpracováním při vysokých rychlostech (100 Mbps).
 
 ---
 

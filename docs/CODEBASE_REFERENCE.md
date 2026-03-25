@@ -7,7 +7,7 @@ Tento dokument funguje jako ultimátní průvodce mozkem celého systému. Umož
 ## 1. Topologie repozitáře a Datový Model
 
 Celý projekt je fyzicky rozseknutý na tři de-facto samostatné, ale funkčně provázané systémy:
-1. `its-obu-app/` – Nativní Android aplikace (Kotlin) suplující jednotku v autě.
+1. `its-obu-app/` – Nativní Android aplikace (Kotlin v2.0.0 Max Load) suplující jednotku v autě.
 2. `its-bo-backend/` – Těžké matematicko-síťové API v Pythonu.
 3. `its-bo-frontend/` – Lehká prezentační web-app vrstva v TypeScriptu.
 
@@ -73,7 +73,7 @@ Třída využívá rozhraní `asyncio.DatagramProtocol`.
 - Event smyčka `uvloop` (C modul dodaný Uvicornem) nám při dopadu nového UDP datagramu vyvolá callback `datagram_received()`. A od té chvíle běží čas!
 - Kód přečte byty, rozluští z oněch bajtů naši strukturu identifikátoru a časového razítka a provede základní matematickou rovnici: *(Kolikátý paket jsem teď čekal)* mínus *(Kolikátý mi reálně z telefonu dopadl)*. Rozdíl těchto dvou čísel rovnou loguje za běhu jako ZTRACENÝ (`Packet Loss`).
 - Následně zprávu a statistiky vezme, nacpe je do stavového in-memory Slovníku (`SessionManager`) a předkopne ho Webovým klientům.
-- *Změna Kernelu v install.sh:* Všechny tyto výpočty by C++ smyčka sice stihla, ale defaultně nastavený Linux (Ubuntu) má pro UDP vyhrazené vnitřní fronty o šířce mrňavých 200 KB. Když z telefonu padají pakety po kilech a Python nestíhá, pamětní `ring_buffer` přeteče a **ztrátu způsobí přímo samotný síťový port Ubuntu ještě dřív, než Python vůbec zjistí, že data přišla.** Tady naráží programátor kódové vrstvy na zeď operačního systému. Právě proto náš instalační skript přetáčí linuxovou konstantu `sysctl -w net.core.rmem_max=8388608` z 200 KB rovnou na obříh 8 MB. 
+- *Změna Kernelu v install.sh:* Všechny tyto výpočty by C++ smyčka sice stihla, ale defaultně nastavený Linux (Ubuntu) má pro UDP vyhrazené vnitřní fronty o šířce mrňavých 200 KB. Když z telefonu padají pakety po kilech a Python nestíhá, pamětní `ring_buffer` přeteče a **ztrátu způsobí přímo samotný síťový port Ubuntu ještě dřív, než Python vůbec zjistí, že data přišla.** Tady naráží programátor kódové vrstvy na zeď operačního systému. Právě proto náš instalační skript přetáčí linuxovou konstantu `sysctl -w net.core.rmem_max=16777216` z 200 KB rovnou na obříh **16 MB** pro zajištění bezchybného příjmu 100 Mbps. 
 
 ### 3.2 SSE Event Manager: Transport k Live Grafům
 Data jsou zachycena, dekódována, ztráta spočítána. Jak to dostaneme ze serveru uživateli na modrý webový monitor do vedlejšví místnosti, aniž by prohlížeč musel klikat F5 (refresh)?

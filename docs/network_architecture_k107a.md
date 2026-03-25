@@ -77,9 +77,9 @@ Internet
 | IP | Port | Výsledek | Čas | Interpretace |
 |---|---|---|---|---|
 | 147.32.103.236 | 8000 | Connection refused | ~1s | FW aktivně blokuje (TCP Reset) – IP viditelná |
-| 147.32.102.209 | 8000 | Timed out | ~7s | FW zahazuje pakety (DROP) – horší stav |
+| 147.32.103.236 | 8000 | Timed out | ~7s | FW zahazuje pakety (DROP) – horší stav |
 | 147.32.103.236 | — | ping timeout | — | ICMP blokovaný (normální) |
-| 147.32.102.209 | — | ping timeout | — | ICMP blokovaný (normální) |
+| 147.32.103.236 | — | ping timeout | — | ICMP blokovaný (normální) |
 
 **Závěr:** Terénní přístup přes `147.32.103.236` je plně funkční – SSH i API odpovídají z externího PC. ✅
 
@@ -114,7 +114,7 @@ Notebook Realtek USB
     → 169.254.11.21
     → ČVUT FW 147.32.100.1
     → Internet
-Veřejná IP: 147.32.102.209
+Veřejná IP: 147.32.103.236
 Typ: DHCP pool – nestabilní, může se změnit
 ```
 
@@ -167,11 +167,11 @@ Zapojit notebook/VM přímo do VLAN 2600 (veřejný internet) druhým kabelem. V
 Nastaveno na Windows notebooku pro případ přístupu přes VMnet8 NAT:
 
 ```powershell
-netsh interface portproxy add v4tov4 listenaddress=147.32.102.209 listenport=8000 connectaddress=192.168.188.130 connectport=8000
-netsh interface portproxy add v4tov4 listenaddress=147.32.102.209 listenport=22 connectaddress=192.168.188.130 connectport=22
-netsh interface portproxy add v4tov4 listenaddress=147.32.102.209 listenport=4567 connectaddress=192.168.188.130 connectport=4567
-netsh interface portproxy add v4tov4 listenaddress=147.32.102.209 listenport=5100 connectaddress=192.168.188.130 connectport=5100
-netsh interface portproxy add v4tov4 listenaddress=147.32.102.209 listenport=3000 connectaddress=192.168.188.130 connectport=3000
+netsh interface portproxy add v4tov4 listenaddress=147.32.103.236 listenport=8000 connectaddress=192.168.188.130 connectport=8000
+netsh interface portproxy add v4tov4 listenaddress=147.32.103.236 listenport=22 connectaddress=192.168.188.130 connectport=22
+netsh interface portproxy add v4tov4 listenaddress=147.32.103.236 listenport=4567 connectaddress=192.168.188.130 connectport=4567
+netsh interface portproxy add v4tov4 listenaddress=147.32.103.236 listenport=5100 connectaddress=192.168.188.130 connectport=5100
+netsh interface portproxy add v4tov4 listenaddress=147.32.103.236 listenport=3000 connectaddress=192.168.188.130 connectport=3000
 ```
 
-> **Poznámka:** Toto řešení nefunguje dokud ČVUT FW neotevře porty pro `147.32.102.209`.
+> **Poznámka:** Toto řešení nefunguje dokud ČVUT FW neotevře porty pro `147.32.103.236`.

@@ -10,7 +10,7 @@ Normativní požadavky (odvozené autorem):
 - Protokol: TCP
 
 Komunikační vzor (DL_ONLY):
-- ITS-BO → OBU: TCP stream simulující SW update balík (50 MB, chunked 64 KB)
+- ITS-BO → OBU: TCP stream simulující masivní SW update balík (500 MB, chunked 64 KB)
 - Každý chunk: [header_len:4B][JSON header][64 KB data]
 - OBU → ITS-BO: per-chunk ACK s integritou (MD5)
 - Test se ukončí po přenosu všech chunků (self-terminating) nebo po timeoutu
@@ -32,8 +32,8 @@ from transports.app_layer_simulator import AppLayerSimulator
 
 logger = logging.getLogger("itsbo.plugins.uc_d_ota")
 
-# 50 MB / 64 KB = 800 chunků
-TOTAL_SIZE_BYTES = 50 * 1024 * 1024
+# 500 MB / 64 KB
+TOTAL_SIZE_BYTES = 500 * 1024 * 1024
 CHUNK_SIZE_BYTES = 64 * 1024
 TOTAL_CHUNKS = TOTAL_SIZE_BYTES // CHUNK_SIZE_BYTES
 
@@ -59,13 +59,13 @@ class UcDOta(BaseUseCase):
             ul_transport="none",
             dl_transport="app_ota",
             thresholds={
-                "dl_throughput_mbps": {"value": 0.4, "op": ">=", "ref": "ISO 24089 (odvozeno)"},
+                "dl_throughput_mbps": {"value": 50.0, "op": ">=", "ref": "ISO 24089 (Safe Side/Real-world 50Mbps)"},
                 "application_reliability_pct": {"value": 99.0, "op": ">=", "ref": "ISO 24089 (odvozeno)"},
             },
             default_params={
-                "transfer_size_mb": 50,
+                "transfer_size_mb": 500,
                 "chunk_size_kb": 64,
-                "package_id": "SW-v2.1.0-patch",
+                "package_id": "SW-v2.1.0-massive",
             },
             baseline_required=False,
             min_repetitions=3,

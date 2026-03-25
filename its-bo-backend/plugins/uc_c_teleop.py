@@ -55,11 +55,11 @@ class UcCTeleOp(BaseUseCase):
             thresholds={
                 "e2e_latency_ms": {"value": 5, "op": "<=", "ref": "R.5.5-002"},
                 "application_reliability_pct": {"value": 99.999, "op": ">=", "ref": "R.5.5-002"},
-                "ul_throughput_mbps": {"value": 25, "op": ">=", "ref": "R.5.5-002"},
+                "ul_throughput_mbps": {"value": 50, "op": ">=", "ref": "R.5.5-002 (Safe Side 50Mbps 4K)"},
                 "dl_throughput_mbps": {"value": 1, "op": ">=", "ref": "R.5.5-002"},
             },
             default_params={
-                "ul_bitrate_mbps": 25.0,
+                "ul_bitrate_mbps": 50.0,
                 "control_interval_ms": 100,
                 "control_packet_size": 256,
             },
@@ -142,7 +142,7 @@ class UcCTeleOp(BaseUseCase):
 
     def get_obu_instructions(self, params: dict[str, Any]) -> str:
         return (
-            "OBU: Posílej UDP burst @ 25 Mbps na burst_port (video UL). "
+            "OBU: Posílej UDP burst @ 50 Mbps na burst_port (video UL 4K safe-side). "
             "Přijímej MCM na control_port+1000, okamžitě odesílej ACK "
             "[seq:4B][0xAC:1B][processing_ns:8B] zpět na control_port."
         )

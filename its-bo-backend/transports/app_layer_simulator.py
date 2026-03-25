@@ -19,6 +19,7 @@ import os
 import socket
 import time
 from typing import Optional
+from core.audit_logger import audit_logger
 
 logger = logging.getLogger("itsbo.transport.app_layer_simulator")
 
@@ -164,6 +165,9 @@ class AppLayerSimulator:
                 payload = json.dumps(aggregated).encode("utf-8")
                 try:
                     await loop.sock_sendto(sock, payload, (target_ip, target_port))
+                    audit_logger.log_event(session_id, "DL", "Tx_CPM", {
+                        "seq": seq, "size_B": len(payload), "objects_merged": num_objects
+                    })
                 except Exception as e:
                     logger.debug("CPM aggregation send error: %s", e)
 
@@ -263,6 +267,9 @@ class AppLayerSimulator:
                         await loop.sock_sendto(sock, pkt, (target_ip, target_port))
                         sent_bytes += len(pkt)
                         sent_packets += 1
+                        audit_logger.log_event(session_id, "DL", "Tx_Video", {
+                            "frame_seq": frame_seq, "size_B": len(pkt), "total_pkts": sent_packets
+                        })
                     except Exception as e:
                         logger.debug("Video DL send error: %s", e)
 

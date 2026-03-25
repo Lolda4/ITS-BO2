@@ -55,15 +55,15 @@ class UcBSeeThrough(BaseUseCase):
             thresholds={
                 "e2e_latency_ms": {"value": 10, "op": "<=", "ref": "R.5.4-009"},
                 "application_reliability_pct": {"value": 99.99, "op": ">=", "ref": "R.5.4-009"},
-                "ul_throughput_mbps": {"value": 10, "op": ">=", "ref": "R.5.4-009"},
+                "ul_throughput_mbps": {"value": 90, "op": ">=", "ref": "R.5.4-009 (Max 90Mbps Peak)"},
             },
             default_params={
-                "ul_bitrate_mbps": 10.0,
-                "dl_bitrate_mbps": 10.0,
+                "ul_bitrate_mbps": 90.0,
+                "dl_bitrate_mbps": 90.0,
                 "fps": 30,
                 "gop_size": 30,
-                "iframe_size_bytes": 50000,
-                "pframe_size_bytes": 5000,
+                "iframe_size_bytes": 150000,
+                "pframe_size_bytes": 30000,
             },
             baseline_required=True,
             min_repetitions=3,
@@ -161,6 +161,6 @@ class UcBSeeThrough(BaseUseCase):
 
     def get_obu_instructions(self, params: dict[str, Any]) -> str:
         return (
-            "OBU: Posílej video-like burst (H.264 GOP: I-frame 50 KB / P-frame 5 KB) "
-            "na burst_port @ 10 Mbps. Přijímej DL video na control_port."
+            "OBU: Posílej video-like burst na burst_port @ 90 Mbps (See-Through Peak). "
+            "Přijímej DL video na control_port."
         )

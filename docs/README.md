@@ -7,7 +7,7 @@ Simulační platforma pro testování vysokodatové V2X komunikace mezi ITS Back
 ```
 its-bo-backend/   Python 3.12 · FastAPI · uvicorn
                   Pluginy UC-A (SDSM), UC-B (See-Through), UC-C (Teleop), UC-D (OTA)
-                  UDP burst příjem 25 Mbps · SSE live feed · Port 8000
+                  UDP burst příjem 100 Mbps · SSE live feed · Port 8000
 
 its-bo-frontend/  Next.js 14 · React 18 · Tailwind CSS · Recharts
                   Dashboard, správa testů, výsledky · Port 3000
@@ -38,7 +38,7 @@ Pokud vynecháš IP, skript ji detekuje automaticky (`hostname -I`).
 
 ### Co instalátor udělá
 
-1. Nastaví systémové UDP buffery (8 MB) – nutné pro příjem 25 Mbps bez ztrát
+1. Nastaví systémové UDP buffery (16 MB) – nutné pro příjem 100 Mbps bez ztrát
 2. Nainstaluje Python závislosti (`requirements.txt`)
 3. Sestaví Next.js frontend (`npm install && npm run build`)
 4. Zapíše `.env.production` s IP serveru pro API komunikaci
@@ -112,4 +112,4 @@ npm run dev
 ## Verze
 
 - ITS-BO Backend: 3.0.0
-- Kompatibilní s ITS-OBU (Android, minSdk 29)
+- Kompatibilní s ITS-OBU v2.0.0 (Android, minSdk 29)
